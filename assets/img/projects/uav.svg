@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Plan-view schematic of a scale RC aircraft and an airfoil section">
+  <rect width="800" height="600" fill="#f7f6f2"/>
+
+  <!-- dimension grid -->
+  <g stroke="#e3e0d8" stroke-width="1">
+    <path d="M0 140 H800 M0 240 H800 M0 340 H800 M0 440 H800"/>
+    <path d="M200 0 V600 M400 0 V600 M600 0 V600"/>
+  </g>
+
+  <!-- plan view -->
+  <g fill="#ffffff" stroke="#1f3a5f" stroke-width="3" stroke-linejoin="round">
+    <path d="M400 150 L452 214 L452 290 L648 348 L648 386 L452 352 L452 420 L486 448 L486 470 L400 452 L314 470 L314 448 L348 420 L348 352 L152 386 L152 348 L348 290 L348 214 Z"/>
+  </g>
+  <g fill="none" stroke="#1f3a5f" stroke-width="1.4" opacity="0.45">
+    <path d="M400 170 V440 M352 290 H448"/>
+    <path d="M214 358 L300 330 M586 358 L500 330"/>
+  </g>
+
+  <!-- airfoil section -->
+  <g transform="translate(240 500)">
+    <path d="M0 24 C 40 2, 120 0, 200 14 C 230 20, 250 24, 260 24 C 250 30, 200 34, 140 32 C 80 30, 30 28, 0 24 Z" fill="#ffffff" stroke="#1f3a5f" stroke-width="2"/>
+    <path d="M0 24 C 60 20, 150 20, 260 24" fill="none" stroke="#8c1d18" stroke-width="1.2" stroke-dasharray="5 4"/>
+    <text x="270" y="30" font-family="Inter, Arial, sans-serif" font-size="12" letter-spacing="2" fill="#7a7f87">XFLR5 SECTION</text>
+  </g>
+
+  <text x="60" y="92" font-family="'Source Serif 4', Georgia, serif" font-size="58" font-weight="600" fill="#1f3a5f">UAV</text>
+  <text x="62" y="122" font-family="Inter, Arial, sans-serif" font-size="14" letter-spacing="3" fill="#4a4f57">SCALE RC AIRCRAFT</text>
+  <text x="700" y="592" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="12" letter-spacing="2" fill="#7a7f87">CARBON &#183; FOAM &#183; BALSA</text>
+</svg>
