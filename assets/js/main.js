@@ -14,10 +14,10 @@
 
   var site = C.site || {};
   var projects = C.projects || [];
-  var certificates = C.certificates || [];
-  var letters = C.letters || [];
+  var credentials = C.credentials || [];
   var experience = C.experience || [];
   var leadership = C.leadership || [];
+  var coursework = site.coursework || [];
 
   /* ---------- small helpers ---------- */
 
@@ -35,12 +35,6 @@
     return (items || []).map(function (t) {
       return '<span class="tag">' + esc(t) + "</span>";
     }).join("");
-  }
-
-  function statusBadge(status) {
-    var map = { Ongoing: "acc", Completed: "pub" };
-    if (!status) return "";
-    return '<span class="badge ' + (map[status] || "muted-badge") + '">' + esc(status) + "</span>";
   }
 
   function sampleBadge(item) {
@@ -182,23 +176,32 @@
     }).join("");
   }
 
+  function renderCoursework() {
+    var host = $("[data-coursework]");
+    if (!host) return;
+    host.innerHTML = coursework.map(function (group) {
+      return '<div class="course-group">' +
+        "<h3>" + esc(group.title) + "</h3>" +
+        "<ul>" +
+          (group.courses || []).map(function (course) {
+            return "<li>" + esc(course) + "</li>";
+          }).join("") +
+        "</ul>" +
+      "</div>";
+    }).join("");
+  }
+
   /* ---------- project list ---------- */
 
   function workRow(p, i) {
     var href = "project.html?id=" + encodeURIComponent(p.id);
+    var domain = p.domain || (p.categories || [])[0] || "Project";
     return '<li class="work-row" data-project-item data-categories="' + esc((p.categories || []).join("|")) + '">' +
       '<a class="work-link" href="' + href + '">' +
         '<span class="work-num">' + pad(i + 1) + "</span>" +
         '<span class="work-copy">' +
-          '<span class="work-meta">' +
-            esc((p.categories || [])[0] || "Project") +
-            '<span class="sep">/</span>' + esc(p.year) +
-            '<span class="sep">/</span>' + esc(p.org) +
-            " " + statusBadge(p.status) +
-          "</span>" +
+          '<span class="work-meta">' + esc(domain) + "</span>" +
           '<span class="work-title">' + esc(p.title) + "</span>" +
-          '<span class="work-summary">' + esc(p.summary) + "</span>" +
-          '<span class="work-tags">' + tags(p.tech) + "</span>" +
         "</span>" +
         '<span class="work-thumb"><img src="' + esc(p.cover) + '" alt="" loading="lazy"></span>' +
         '<span class="work-arrow" aria-hidden="true">&rarr;</span>' +
@@ -209,8 +212,7 @@
   function renderFeaturedProjects() {
     var host = $("[data-featured-projects]");
     if (!host) return;
-    var featured = projects.filter(function (p) { return p.featured !== false; }).slice(0, 3);
-    host.innerHTML = featured.map(workRow).join("");
+    host.innerHTML = projects.map(workRow).join("");
   }
 
   function renderProjects() {
@@ -288,111 +290,94 @@
     }
   }
 
-  /* ---------- certificates ---------- */
+  /* ---------- credentials ---------- */
 
-  var certById = {};
-  certificates.forEach(function (c) { certById[c.id] = c; });
+  var credentialById = {};
+  credentials.forEach(function (c) { credentialById[c.id] = c; });
 
-  function ledgerRow(cert) {
-    return '<button class="ledger-row" type="button" data-cert="' + esc(cert.id) + '">' +
-      '<span class="ledger-year">' + esc(cert.date) + "</span>" +
-      '<span class="ledger-title">' + esc(cert.title) + " " + sampleBadge(cert) + "</span>" +
-      '<span class="ledger-issuer">' + esc(cert.issuer) + "</span>" +
-      '<span class="ledger-action">' + (cert.file ? "Open PDF \u2192" : "View \u2192") + "</span>" +
+  function credentialIssuer(item) {
+    return item.issuer || item.affiliation || "";
+  }
+
+  function ledgerRow(item) {
+    var isLetter = item.type === "Letter";
+    var action = item.file
+      ? (isLetter ? "Read letter \u2192" : "Open PDF \u2192")
+      : "View \u2192";
+    return '<button class="ledger-row" type="button" data-credential="' + esc(item.id) + '">' +
+      '<span class="ledger-year">' + esc(item.date) + "</span>" +
+      '<span class="ledger-title">' + esc(item.title) + " " + sampleBadge(item) + "</span>" +
+      '<span class="ledger-issuer">' + esc(credentialIssuer(item)) + "</span>" +
+      '<span class="ledger-action">' + action + "</span>" +
     "</button>";
   }
 
-  function renderCertificates() {
-    var host = $("[data-certificates]");
-    if (host) host.innerHTML = certificates.map(ledgerRow).join("");
+  function renderCredentials() {
+    var host = $("[data-credentials]");
+    if (host) host.innerHTML = credentials.map(ledgerRow).join("");
   }
 
-  function renderCertificatePreview() {
-    var host = $("[data-cert-preview]");
+  function renderCredentialPreview() {
+    var host = $("[data-credential-preview]");
     if (!host) return;
-    host.innerHTML = certificates.slice(0, 4).map(ledgerRow).join("");
+    host.innerHTML = credentials.map(ledgerRow).join("");
   }
 
-  function openCertificate(cert) {
-    var hasFile = !!cert.file;
-    openModal(
-      '<p class="mini-label">Certificate</p>' +
-      '<h2 id="modal-title">' + esc(cert.title) + "</h2>" +
-      '<p class="modal-sub">' + esc(cert.issuer) + " · " + esc(cert.date) + " " + sampleBadge(cert) + "</p>" +
-      '<div class="modal-figure"><img src="' + esc(cert.thumbnail) + '" alt="' + esc(cert.title) + '"></div>' +
-      (cert.skills && cert.skills.length ? '<div class="work-tags">' + tags(cert.skills) + "</div>" : "") +
-      '<div class="modal-actions">' +
-        (hasFile
-          ? '<a class="btn btn-accent" href="' + esc(cert.file) + '" target="_blank" rel="noopener">Open PDF</a>' +
-            '<a class="btn" href="' + esc(cert.file) + '" download>Download</a>'
-          : '<span class="muted small">A digital copy of this certificate is available on request.</span>') +
-        (cert.credentialUrl
-          ? '<a class="btn" href="' + esc(cert.credentialUrl) + '" target="_blank" rel="noopener">Verify credential</a>'
-          : "") +
-      "</div>"
-    );
-  }
+  function openCredential(item) {
+    var isLetter = item.type === "Letter";
+    var hasFile = !!item.file;
+    var isPdf = hasFile && /\.pdf($|\?)/i.test(item.file);
+    var kind = isLetter ? "Letter of recommendation" : "Certificate";
 
-  document.addEventListener("click", function (event) {
-    var trigger = event.target.closest("[data-cert]");
-    if (!trigger) return;
-    var cert = certById[trigger.getAttribute("data-cert")];
-    if (cert) openCertificate(cert);
-  });
+    var html =
+      '<p class="mini-label">' + esc(kind) + "</p>" +
+      '<h2 id="modal-title">' + esc(item.title) + "</h2>" +
+      '<p class="modal-sub">' + esc(credentialIssuer(item)) + " \u00b7 " + esc(item.date) + " " + sampleBadge(item) + "</p>";
 
-  /* ---------- letters ---------- */
+    if (isLetter && item.recommender) {
+      html += '<p class="modal-copy"><strong>' + esc(item.recommender) + "</strong>" +
+        (item.recommenderTitle ? ", " + esc(item.recommenderTitle) : "") +
+        (item.affiliation ? ", " + esc(item.affiliation) : "") + "</p>";
+    }
 
-  var letterById = {};
-  letters.forEach(function (l) { letterById[l.id] = l; });
+    if (item.summary) {
+      html += '<p class="modal-copy">' + esc(item.summary) + "</p>";
+    }
 
-  function letterCard(letter) {
-    var isPublic = letter.visibility === "public" && !!letter.file;
-    var pending = letter.visibility === "public" && !letter.file;
-    var onRequest = letter.visibility === "on-request";
-    var state = isPublic ? "Published PDF" : (pending ? "Public \u00b7 pending upload" : "On request");
-    return '<article class="letter-card">' +
-      '<div class="quote-mark" aria-hidden="true">&ldquo;</div>' +
-      '<p class="letter-from">' + esc(letter.relationship) + "</p>" +
-      "<h2>" + esc(letter.recommender) + " " + sampleBadge(letter) + "</h2>" +
-      '<p class="letter-role">' + esc(letter.title) + ", " + esc(letter.affiliation) + "</p>" +
-      '<p class="letter-meta">' + esc(letter.date) + " · " + state + "</p>" +
-      '<div class="letter-actions">' +
-        (isPublic
-          ? '<button class="btn" type="button" data-letter="' + esc(letter.id) + '">Preview</button>' +
-            '<a class="btn btn-accent" href="' + esc(letter.file) + '" target="_blank" rel="noopener">Open PDF</a>'
-          : '<span class="letter-note">' +
-            (pending
-              ? "Document not uploaded yet."
-              : (onRequest ? "Available on request — please get in touch by email." : "A digital copy is available on request.")) +
-            "</span>") +
-      "</div>" +
-    "</article>";
-  }
+    if (hasFile && isPdf) {
+      html += '<iframe class="pdf-frame" src="' + esc(item.file) + '#view=FitH" title="' + esc(item.title) + '"></iframe>';
+    } else {
+      html += '<div class="modal-figure"><img src="' + esc(item.thumbnail) + '" alt="' + esc(item.title) + '"></div>';
+    }
 
-  function renderLetters() {
-    var host = $("[data-letters]");
-    if (host) host.innerHTML = letters.map(letterCard).join("");
-  }
+    if (item.skills && item.skills.length) {
+      html += '<div class="work-tags">' + tags(item.skills) + "</div>";
+    }
 
-  function openLetter(letter) {
-    if (!letter || !letter.file) return;
-    openModal(
-      '<p class="mini-label">Letter of recommendation</p>' +
-      '<h2 id="modal-title">' + esc(letter.recommender) + "</h2>" +
-      '<p class="modal-sub">' + esc(letter.title) + ", " + esc(letter.affiliation) + " · " + esc(letter.date) + "</p>" +
-      '<iframe class="pdf-frame" src="' + esc(letter.file) + '#view=FitH" title="Letter of recommendation from ' + esc(letter.recommender) + '"></iframe>' +
-      '<div class="modal-actions">' +
-        '<a class="btn btn-accent" href="' + esc(letter.file) + '" target="_blank" rel="noopener">Open in new tab</a>' +
-        '<a class="btn" href="' + esc(letter.file) + '" download>Download</a>' +
-      "</div>" +
-      '<span class="note">Shared with the permission of the author.</span>'
-    );
+    html += '<div class="modal-actions">';
+    if (hasFile) {
+      html += '<a class="btn btn-accent" href="' + esc(item.file) + '" target="_blank" rel="noopener">Open PDF</a>' +
+        '<a class="btn" href="' + esc(item.file) + '" download>Download</a>';
+    } else {
+      html += '<span class="muted small">A digital copy of this credential is available on request.</span>';
+    }
+    if (item.credentialUrl) {
+      html += '<a class="btn" href="' + esc(item.credentialUrl) + '" target="_blank" rel="noopener">Verify credential</a>';
+    }
+    html += "</div>";
+
+    if (isLetter && hasFile) {
+      html += '<span class="note">Shared with the permission of the author.</span>';
+    }
+
+    openModal(html);
   }
 
   document.addEventListener("click", function (event) {
-    var trigger = event.target.closest("[data-letter]");
+    var trigger = event.target.closest("[data-credential]");
     if (!trigger) return;
-    openLetter(letterById[trigger.getAttribute("data-letter")]);
+    var item = credentialById[trigger.getAttribute("data-credential")];
+    if (item) openCredential(item);
   });
 
   /* ---------- project detail ---------- */
@@ -432,56 +417,47 @@
 
     var previous = projects[index - 1];
     var next = projects[index + 1];
+    var domain = project.domain || (project.categories || [])[0] || "Project";
+    var indexLabel = pad(index + 1) + " / " + pad(projects.length);
+    var tech = project.tech || [];
+
+    var indexList = projects.map(function (p, i) {
+      var current = p.id === project.id;
+      return "<li><a href=\"project.html?id=" + encodeURIComponent(p.id) + "\"" +
+        (current ? ' aria-current="page"' : "") + ">" +
+        "<span>" + pad(i + 1) + "</span>" +
+        "<span>" + esc(p.title) + "</span>" +
+      "</a></li>";
+    }).join("");
 
     host.innerHTML =
       '<header class="detail-hero">' +
         '<div class="wrap">' +
           '<a class="back-link" href="projects.html">&larr; All projects</a>' +
-          '<p class="mini-label">' + esc((project.categories || [])[0] || "Project") + "</p>" +
+          '<p class="mini-label">Project ' + pad(index + 1) + " / " + pad(projects.length) + "</p>" +
           "<h1>" + esc(project.title) + "</h1>" +
           '<p class="lede">' + esc(project.summary) + "</p>" +
           '<p class="masthead-meta">' +
-            "<span>" + esc(project.org) + "</span><span class=\"sep\">/</span>" +
-            "<span>" + esc(project.year) + "</span><span class=\"sep\">/</span>" +
-            "<span>" + esc(project.status) + "</span>" +
+            "<span>" + esc(domain) + "</span><span class=\"sep\">/</span>" +
+            "<span>" + esc(indexLabel) + "</span>" +
           "</p>" +
         "</div>" +
       "</header>" +
       '<div class="wrap" style="padding-top:0">' +
         '<dl class="facts">' +
-          '<div class="fact"><div class="k">Role</div><div class="v">' + esc(project.role) + "</div></div>" +
-          '<div class="fact"><div class="k">Organisation</div><div class="v">' + esc(project.org) + "</div></div>" +
-          '<div class="fact"><div class="k">Timeline</div><div class="v">' + esc(project.year) + "</div></div>" +
-          '<div class="fact"><div class="k">Status</div><div class="v">' + esc(project.status) + "</div></div>" +
+          '<div class="fact"><div class="k">Domain</div><div class="v">' + esc(domain) + "</div></div>" +
+          '<div class="fact"><div class="k">Tools &amp; methods</div><div class="v">' + esc(tech.join(" \u00b7 ")) + "</div></div>" +
+          '<div class="fact"><div class="k">Project index</div><div class="v">' + esc(indexLabel) + "</div></div>" +
         "</dl>" +
         '<div class="detail-grid">' +
           '<div class="prose">' +
             (project.description || []).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") +
             projectFigure(project) +
-            ((project.gallery && project.gallery.length)
-              ? '<div class="gallery">' + project.gallery.map(function (g) {
-                  return '<figure class="figure">' +
-                    '<div class="frame"><img src="' + esc(g.src) + '" alt="' + esc(g.caption || project.title) + '" loading="lazy" data-lightbox data-caption="' + esc(g.caption || project.title) + '"></div>' +
-                    (g.caption ? "<figcaption>" + esc(g.caption) + "</figcaption>" : "") +
-                  "</figure>";
-                }).join("") + "</div>"
-              : "") +
           "</div>" +
           '<aside class="detail-aside">' +
-            ((project.highlights && project.highlights.length)
-              ? '<div class="panel"><h3>Highlights</h3><ul>' +
-                project.highlights.map(function (h) { return "<li>" + esc(h) + "</li>"; }).join("") +
-                "</ul></div>"
-              : "") +
-            ((project.tech && project.tech.length)
-              ? '<div class="panel"><h3>Tools &amp; methods</h3><div class="chips">' + tags(project.tech) + "</div></div>"
-              : "") +
-            ((project.links && project.links.length)
-              ? '<div class="panel"><h3>Links</h3><div class="links">' +
-                project.links.map(function (l) {
-                  return '<a href="' + esc(l.href) + '"' + externalAttrs(l) + ">" + esc(l.label) + " &rarr;</a>";
-                }).join("") +
-                "</div></div>"
+            '<div class="panel"><h3>Project index</h3><ol class="index-list">' + indexList + "</ol></div>" +
+            ((tech.length)
+              ? '<div class="panel"><h3>Tools &amp; methods</h3><div class="chips">' + tags(tech) + "</div></div>"
               : "") +
           "</aside>" +
         "</div>" +
@@ -541,11 +517,11 @@
   renderContacts();
   renderBio();
   renderStats();
+  renderCoursework();
   renderFeaturedProjects();
   renderProjects();
   renderExperience();
-  renderCertificates();
-  renderCertificatePreview();
-  renderLetters();
+  renderCredentials();
+  renderCredentialPreview();
   renderProjectDetail();
 })();

@@ -1,12 +1,13 @@
 # Ved Patel — portfolio site
 
-A static academic portfolio: home/profile, projects, project detail pages,
-certificates and letters of recommendation.
+A static academic portfolio: home/profile, an eight-project index, project
+detail pages and a merged credentials page for certificates and letters of
+recommendation.
 
-No framework, no build step, no dependencies. Plain HTML, one stylesheet,
-one renderer and one content file. The visual language is editorial rather
-than corporate: parchment paper, deep ink, terracotta accents, a serif
-display face and a mono label face.
+No framework, no build step, no dependencies. Plain HTML, one stylesheet, one
+renderer and one content file. The visual language is editorial rather than
+corporate: parchment paper, deep ink, terracotta accents, a serif display face
+and a mono label face.
 
 ---
 
@@ -20,26 +21,25 @@ python -m http.server 8080
 # then open http://localhost:8080
 ```
 
-Everything works from `file://` too, because the content is a JavaScript
-global rather than a fetched JSON file.
+Everything works from `file://` too, because the content is a JavaScript global
+rather than a fetched JSON file.
 
 ---
 
 ## Files
 
 ```
-index.html            Home / profile
+index.html            Home / profile, projects, credentials and coursework
 projects.html         Project list with category filters
 project.html          Project detail template (reads ?id=slug)
-certificates.html     Certificate ledger + preview modal
-letters.html          Letters of recommendation
+credentials.html      Certificates and letters in one ledger
 404.html              Not-found page
 assets/
   css/style.css       All styling (palette lives in :root)
   js/main.js          Rendering, filters, modals, mobile nav
   data/content.js     ← edit this for almost everything
-  img/                Portrait and placeholder artwork
-  docs/               CV, sample letter PDFs, (later) certificate PDFs
+  img/                Portrait, project placeholders, credential placeholders
+  docs/               CV and the sample letter PDF
 .nojekyll             Tells GitHub Pages not to run Jekyll
 ```
 
@@ -47,7 +47,8 @@ assets/
 
 ## Editing content
 
-Open `assets/data/content.js`. Search for `TODO` to find the sample entries.
+Open `assets/data/content.js`. Search for `TODO` or `sample: true` to find the
+entries that still need real details.
 
 ### Change the accent colour
 
@@ -75,88 +76,104 @@ In `content.js` → `site.contacts`, add:
 
 ### Add a project
 
-Add an object to the `projects` array. Copy an existing one and change the
-fields. `id` becomes the URL (`project.html?id=your-id`), so keep it short and
-unique. Drop screenshots into `assets/img/projects/` and point `cover` at one.
+Add an object to the `projects` array. The order of the array is the order on
+both the home page and `projects.html`. The home page shows only the project
+name and `domain`; the full `description` and one cover image live on the
+detail page.
 
 ```js
 {
-  id: "my-project",
+  id: "my-project",                       // becomes project.html?id=my-project
   title: "Project title",
-  categories: ["Robotics"],          // drives the filter buttons
-  year: "2026",
-  status: "Ongoing",                 // "Ongoing" | "Completed"
-  role: "Your role",
-  org: "Organisation",
-  summary: "One sentence for the list card.",
+  domain: "Mechanical Design",            // label shown on the home index
+  categories: ["Mechanical Design"],      // drives the filter buttons
+  summary: "One sentence for the detail lede and social preview.",
   description: ["Paragraph one.", "Paragraph two."],
-  highlights: ["Point one", "Point two"],
   tech: ["SolidWorks", "ANSYS"],
   cover: "assets/img/projects/my-project.jpg",
-  coverCaption: "What the image shows.",
-  gallery: [                          // optional
-    { src: "assets/img/projects/shot-2.jpg", caption: "Caption" }
-  ],
-  links: [                            // optional
-    { label: "GitHub", href: "https://github.com/...", external: true }
-  ]
+  coverCaption: "What the image shows."
 }
 ```
 
-### Add a certificate
+Filter groups currently in use: **Mechanical Design**, **CFD**, **Aerospace**,
+**Design & Additive Manufacturing**, and **Robotics & Control**. A project can
+appear under more than one group by listing multiple categories.
 
-Put the PDF in `assets/docs/certificates/` and a preview image in
-`assets/img/certificates/`, then add:
+### Add a project photo
+
+Drop the image into `assets/img/projects/` and point `cover` at it. Each detail
+page is designed for one photograph. The current SVG files are themed
+placeholders — replace them with JPEG/PNG/WebP images and update the paths in
+`content.js` when the real photos are available. A 4:3 or 3:2 crop works best.
+
+### Add or edit a credential
+
+Certificates and letters share one `credentials` array and one page. Each entry
+needs a `type` of `"Certificate"` or `"Letter"`.
 
 ```js
 {
   id: "cert-id",
+  type: "Certificate",                    // "Certificate" | "Letter"
   title: "Certificate title",
   issuer: "Issuing organisation",
   date: "2026",
-  credentialUrl: null,                       // optional verification link
+  summary: "One or two sentences for the preview modal.",
+  skills: ["CFD"],
+  credentialUrl: null,                    // optional verification link
   file: "assets/docs/certificates/cert-id.pdf",
   thumbnail: "assets/img/certificates/cert-id.jpg",
-  skills: ["CFD"],
-  sample: false                              // omit or set false once real
+  sample: false                           // omit or false once real
 }
 ```
 
-### Add a letter of recommendation
-
-Put the signed PDF in `assets/docs/lors/`, then:
+For a letter, use the letter-specific fields instead of `skills`:
 
 ```js
 {
   id: "lor-name",
+  type: "Letter",
+  title: "Letter of Recommendation — Role",
+  issuer: "Organisation",
+  date: "2026",
+  summary: "Who wrote it and what it covers.",
   recommender: "Dr. A. Person",
-  title: "Professor",
+  recommenderTitle: "Professor",
   affiliation: "BITS Pilani",
   relationship: "Project supervisor",
-  date: "2026",
-  visibility: "public",              // "public" (PDF shown) or "on-request"
+  visibility: "public",
   file: "assets/docs/lors/lor-name.pdf",
-  thumbnail: "assets/img/letter-placeholder.svg"
+  thumbnail: "assets/img/letter-placeholder.svg",
+  sample: false
 }
 ```
 
-`visibility: "public"` with a `file` gives the card Preview / Open PDF actions
-and an embedded PDF viewer. `"on-request"` shows the recommender details but no
-document. A `public` entry without a `file` renders “Document not uploaded yet”
-rather than a broken link.
+A PDF `file` gives the row Preview / Open PDF actions and an embedded PDF
+viewer. With `file: null`, the row still appears and the modal says a copy is
+available on request.
 
-> **Privacy:** anything in `visibility: "public"` with a `file` is published and
-> can be indexed. Use `"on-request"` to show the recommender details but no PDF.
-> Only publish a letter with its author's permission.
+> **Privacy:** anything with a public `file` is published and can be indexed.
+> Only publish a letter with its author's permission. The DRDO letter currently
+> points at `assets/docs/lors/sample-lor-drdo.pdf`, which is a clearly marked
+> placeholder. Replace it with the signed original and update `recommender`.
 
-Two sample PDFs ship in `assets/docs/lors/` (`sample-lor-drdo.pdf`,
-`sample-lor-bits.pdf`). They are clearly marked placeholders in the document
-itself. Replace them with the signed originals and update the `file` paths.
+### Add coursework
+
+Coursework lives in `site.coursework` as groups of course names:
+
+```js
+coursework: [
+  { title: "Core", courses: ["Fluid Mechanics", "Heat Transfer"] },
+  { title: "Electives / Robotics Minor", courses: ["Robotics"] }
+]
+```
+
+The home page renders the groups in order.
 
 ### Remove the "Sample" badges
 
-Sample entries in `certificates` and `letters` have `sample: true`. Once the
-real details and PDF are in place, delete that line — the badge disappears.
+Sample entries in `credentials` have `sample: true`. Once the real details and
+document are in place, delete that line — the badge disappears.
 
 ### Replace the portrait and CV
 
@@ -197,11 +214,38 @@ DNS at GitHub Pages (A records for the apex, CNAME for `www`). Enable
 
 ---
 
+## Future update workflow
+
+Every content change follows the same loop:
+
+1. **Edit** `assets/data/content.js` (text, projects, credentials, coursework).
+2. **Add files** to `assets/img/projects/` for photos and `assets/docs/` for
+   PDFs, then update the matching `cover` / `file` path in `content.js`.
+3. **Preview** with `python -m http.server 8080` and check the home page, the
+   project detail page, the credentials modal and a narrow mobile width.
+4. **Commit and push**:
+
+   ```powershell
+   cd C:\Users\Ved\portfolio
+   git add -A
+   git commit -m "Update projects and credentials"
+   git push
+   ```
+
+5. GitHub Pages redeploys automatically from `main`; the live site updates in
+   roughly a minute.
+
+To take a project down, delete its object from the `projects` array. To hide a
+credential, delete it from `credentials`; to keep the row but hide the file,
+set `file: null`.
+
+---
+
 ## Notes
 
 - The site is print-friendly. Its colours are deliberately warm and light; a
   dark-mode variant would be a small addition to `style.css` if wanted later.
 - Phone number is deliberately not published. Add it to `site.contacts` only if
   you want it public.
-- The resume file used for the CV is `Resume 01-11-2026_compressed.pdf`; swap it
-  if a newer version exists.
+- The home page lists all eight projects; the filter buttons on `projects.html`
+  narrow the list by category.
