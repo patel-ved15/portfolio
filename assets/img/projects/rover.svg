@@ -1,27 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Top-view schematic of a six-wheel rover chassis">
-  <rect width="800" height="600" fill="#f7f6f2"/>
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Top-view schematic of a six-wheel rover chassis">
+  <rect width="800" height="600" fill="#f3eee4"/>
 
   <!-- ground grid -->
-  <g stroke="#e3e0d8" stroke-width="1">
+  <g stroke="#ddd6c7" stroke-width="1">
     <path d="M0 484 H800 M0 504 H800 M0 524 H800 M0 544 H800 M0 564 H800"/>
   </g>
 
   <!-- chassis -->
-  <g fill="none" stroke="#1f3a5f" stroke-width="3">
+  <g fill="none" stroke="#1c2822" stroke-width="3">
     <rect x="200" y="230" width="400" height="160" rx="10"/>
     <rect x="242" y="266" width="316" height="88" rx="6" stroke-width="2" opacity="0.6"/>
     <path d="M200 310 H600" stroke-width="1.5" opacity="0.4"/>
   </g>
 
   <!-- rocker-bogie arms -->
-  <g stroke="#1f3a5f" stroke-width="2.5" opacity="0.75">
+  <g stroke="#1c2822" stroke-width="2.5" opacity="0.75">
     <path d="M244 310 L196 214 M244 310 L196 406"/>
     <path d="M556 310 L604 214 M556 310 L604 406"/>
     <path d="M286 310 L262 252 M514 310 L538 252"/>
   </g>
 
   <!-- wheels -->
-  <g fill="#ffffff" stroke="#1f3a5f" stroke-width="3">
+  <g fill="#ffffff" stroke="#1c2822" stroke-width="3">
     <circle cx="188" cy="210" r="30"/>
     <circle cx="188" cy="410" r="30"/>
     <circle cx="256" cy="248" r="30"/>
@@ -29,7 +29,7 @@
     <circle cx="612" cy="210" r="30"/>
     <circle cx="612" cy="410" r="30"/>
   </g>
-  <g fill="#1f3a5f" opacity="0.18">
+  <g fill="#1c2822" opacity="0.18">
     <circle cx="188" cy="210" r="12"/>
     <circle cx="188" cy="410" r="12"/>
     <circle cx="256" cy="248" r="12"/>
@@ -39,12 +39,12 @@
   </g>
 
   <!-- payload deck -->
-  <g fill="none" stroke="#8c1d18" stroke-width="1.5" opacity="0.75">
+  <g fill="none" stroke="#b3451f" stroke-width="1.5" opacity="0.75">
     <rect x="360" y="284" width="80" height="52" rx="3"/>
     <path d="M360 300 H440 M400 284 V336"/>
   </g>
 
-  <text x="60" y="92" font-family="'Source Serif 4', Georgia, serif" font-size="58" font-weight="600" fill="#1f3a5f">ROVER</text>
-  <text x="62" y="122" font-family="Inter, Arial, sans-serif" font-size="14" letter-spacing="3" fill="#4a4f57">MECHANICAL SUBSYSTEM</text>
-  <text x="400" y="505" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" letter-spacing="2" fill="#7a7f87">CHASSIS &#183; ROCKER-BOGIE &#183; ANSYS VALIDATION</text>
+  <text x="60" y="92" font-family="'Source Serif 4', Georgia, serif" font-size="58" font-weight="600" fill="#1c2822">ROVER</text>
+  <text x="62" y="122" font-family="Inter, Arial, sans-serif" font-size="14" letter-spacing="3" fill="#3c453f">MECHANICAL SUBSYSTEM</text>
+  <text x="400" y="505" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" letter-spacing="2" fill="#5f685f">CHASSIS &#183; ROCKER-BOGIE &#183; ANSYS VALIDATION</text>
 </svg>

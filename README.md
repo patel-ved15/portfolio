@@ -4,7 +4,9 @@ A static academic portfolio: home/profile, projects, project detail pages,
 certificates and letters of recommendation.
 
 No framework, no build step, no dependencies. Plain HTML, one stylesheet,
-one renderer and one content file.
+one renderer and one content file. The visual language is editorial rather
+than corporate: parchment paper, deep ink, terracotta accents, a serif
+display face and a mono label face.
 
 ---
 
@@ -29,15 +31,15 @@ global rather than a fetched JSON file.
 index.html            Home / profile
 projects.html         Project list with category filters
 project.html          Project detail template (reads ?id=slug)
-certificates.html     Certificate gallery + preview modal
+certificates.html     Certificate ledger + preview modal
 letters.html          Letters of recommendation
 404.html              Not-found page
 assets/
-  css/style.css       All styling (accent colour is one variable)
+  css/style.css       All styling (palette lives in :root)
   js/main.js          Rendering, filters, modals, mobile nav
   data/content.js     ← edit this for almost everything
   img/                Portrait and placeholder artwork
-  docs/               CV and (later) certificate / letter PDFs
+  docs/               CV, sample letter PDFs, (later) certificate PDFs
 .nojekyll             Tells GitHub Pages not to run Jekyll
 ```
 
@@ -52,9 +54,15 @@ Open `assets/data/content.js`. Search for `TODO` to find the sample entries.
 `assets/css/style.css`, first block:
 
 ```css
---accent:      #1f3a5f;   /* Oxford navy */
---accent-soft: #2c5282;
+--paper:       #f3eee4;   /* page background */
+--ink:         #141c19;   /* dark bands and headings */
+--accent:      #b3451f;   /* terracotta — links, labels, rules */
+--accent-deep: #8f3416;
 ```
+
+The site uses one accent for every highlight, so changing `--accent` (and
+`--accent-deep`) re-themes it. `--accent-on-dark` is the lighter tint used on
+the ink-coloured hero, masthead and footer.
 
 ### Add GitHub / LinkedIn
 
@@ -126,15 +134,24 @@ Put the signed PDF in `assets/docs/lors/`, then:
   affiliation: "BITS Pilani",
   relationship: "Project supervisor",
   date: "2026",
-  visibility: "public",              // or "on-request"
+  visibility: "public",              // "public" (PDF shown) or "on-request"
   file: "assets/docs/lors/lor-name.pdf",
   thumbnail: "assets/img/letter-placeholder.svg"
 }
 ```
 
+`visibility: "public"` with a `file` gives the card Preview / Open PDF actions
+and an embedded PDF viewer. `"on-request"` shows the recommender details but no
+document. A `public` entry without a `file` renders “Document not uploaded yet”
+rather than a broken link.
+
 > **Privacy:** anything in `visibility: "public"` with a `file` is published and
 > can be indexed. Use `"on-request"` to show the recommender details but no PDF.
 > Only publish a letter with its author's permission.
+
+Two sample PDFs ship in `assets/docs/lors/` (`sample-lor-drdo.pdf`,
+`sample-lor-bits.pdf`). They are clearly marked placeholders in the document
+itself. Replace them with the signed originals and update the `file` paths.
 
 ### Remove the "Sample" badges
 
@@ -182,8 +199,8 @@ DNS at GitHub Pages (A records for the apex, CNAME for `www`). Enable
 
 ## Notes
 
-- The site is light-theme and print-friendly; a dark mode would be a small
-  addition to `style.css` if wanted later.
+- The site is print-friendly. Its colours are deliberately warm and light; a
+  dark-mode variant would be a small addition to `style.css` if wanted later.
 - Phone number is deliberately not published. Add it to `site.contacts` only if
   you want it public.
 - The resume file used for the CV is `Resume 01-11-2026_compressed.pdf`; swap it

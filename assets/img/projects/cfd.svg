@@ -1,26 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Schematic of a finite-difference grid and a von Karman vortex street">
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Schematic of a finite-difference grid and a von Karman vortex street">
   <defs>
     <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M40 0H0V40" fill="none" stroke="#e3e0d8" stroke-width="1"/>
+      <path d="M40 0H0V40" fill="none" stroke="#ddd6c7" stroke-width="1"/>
     </pattern>
   </defs>
-  <rect width="800" height="600" fill="#f7f6f2"/>
+  <rect width="800" height="600" fill="#f3eee4"/>
   <rect width="800" height="600" fill="url(#grid)"/>
 
   <!-- bluff body -->
-  <circle cx="190" cy="300" r="34" fill="#ffffff" stroke="#1f3a5f" stroke-width="3"/>
+  <circle cx="190" cy="300" r="34" fill="#ffffff" stroke="#1c2822" stroke-width="3"/>
 
   <!-- streamlines -->
-  <g fill="none" stroke="#1f3a5f" stroke-width="2" opacity="0.55">
+  <g fill="none" stroke="#1c2822" stroke-width="2" opacity="0.55">
     <path d="M60 220 C 140 220, 160 250, 210 252 C 280 255, 320 230, 400 220 C 500 208, 620 220, 750 214"/>
     <path d="M60 380 C 140 380, 160 350, 210 348 C 280 345, 320 370, 400 380 C 500 392, 620 380, 750 386"/>
   </g>
-  <g fill="none" stroke="#1f3a5f" stroke-width="2" opacity="0.85">
+  <g fill="none" stroke="#1c2822" stroke-width="2" opacity="0.85">
     <path d="M226 300 C 270 276, 300 276, 340 300 S 410 324, 450 300 S 520 276, 560 300 S 630 324, 670 300 S 730 276, 760 300"/>
   </g>
 
   <!-- vortex street -->
-  <g fill="#1f3a5f" opacity="0.16">
+  <g fill="#1c2822" opacity="0.16">
     <circle cx="300" cy="274" r="13"/>
     <circle cx="360" cy="326" r="15"/>
     <circle cx="425" cy="272" r="17"/>
@@ -28,7 +28,7 @@
     <circle cx="570" cy="270" r="21"/>
     <circle cx="648" cy="330" r="23"/>
   </g>
-  <g fill="none" stroke="#1f3a5f" stroke-width="1.5" opacity="0.5">
+  <g fill="none" stroke="#1c2822" stroke-width="1.5" opacity="0.5">
     <circle cx="300" cy="274" r="13"/>
     <circle cx="360" cy="326" r="15"/>
     <circle cx="425" cy="272" r="17"/>
@@ -40,7 +40,7 @@
   <!-- annotation -->
   <path d="M60 470 H740" stroke="#c9c4b8" stroke-width="1"/>
   <path d="M120 462 V478 M700 462 V478" stroke="#c9c4b8" stroke-width="1"/>
-  <text x="60" y="92" font-family="'Source Serif 4', Georgia, serif" font-size="58" font-weight="600" fill="#1f3a5f">CFD</text>
-  <text x="62" y="122" font-family="Inter, Arial, sans-serif" font-size="14" letter-spacing="3" fill="#4a4f57">2D INCOMPRESSIBLE FLOW</text>
-  <text x="400" y="505" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" letter-spacing="2" fill="#7a7f87">FINITE-DIFFERENCE SOLVER &#183; MATLAB</text>
+  <text x="60" y="92" font-family="'Source Serif 4', Georgia, serif" font-size="58" font-weight="600" fill="#1c2822">CFD</text>
+  <text x="62" y="122" font-family="Inter, Arial, sans-serif" font-size="14" letter-spacing="3" fill="#3c453f">2D INCOMPRESSIBLE FLOW</text>
+  <text x="400" y="505" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" letter-spacing="2" fill="#5f685f">FINITE-DIFFERENCE SOLVER &#183; MATLAB</text>
 </svg>

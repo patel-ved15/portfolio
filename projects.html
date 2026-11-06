@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Projects · Ved Patel</title>
 <meta name="description" content="Engineering projects by Ved Patel: a 2D incompressible CFD solver, an autonomous Mars rover mechanical subsystem, and scale RC aircraft design and flight testing.">
-<meta name="theme-color" content="#1f3a5f">
+<meta name="theme-color" content="#141c19">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Projects · Ved Patel">
 <meta property="og:description" content="CFD, autonomous rover systems and UAV design.">
@@ -13,7 +13,7 @@
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="assets/data/content.js" defer></script>
 <script src="assets/js/main.js" defer></script>
@@ -23,8 +23,8 @@
 <a class="skip-link" href="#main">Skip to content</a>
 
 <header class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="index.html">Ved Patel</a>
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">VP</span> Ved Patel</a>
     <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
@@ -40,18 +40,23 @@
 
 <main id="main">
 
-  <section class="page-head">
-    <div class="container">
-      <p class="kicker">Projects</p>
-      <h1>Engineering Projects</h1>
+  <section class="masthead">
+    <div class="wrap">
+      <p class="mini-label">Index of work</p>
+      <h1>Projects</h1>
       <p class="lede">Simulation and hardware across computational fluid dynamics, autonomous rover systems and UAV design — from a solver written from first principles to airframes that actually fly.</p>
+      <p class="masthead-meta">
+        <span>3 projects</span><span class="sep">/</span>
+        <span>2025 &ndash; present</span><span class="sep">/</span>
+        <span>BITS Pilani &amp; DRDO CEMILAC</span>
+      </p>
     </div>
   </section>
 
-  <section>
-    <div class="container">
+  <section class="section">
+    <div class="wrap">
       <div class="filters" data-filters role="group" aria-label="Filter projects by area"></div>
-      <div class="rlist" data-projects></div>
+      <ol class="work-index" data-projects></ol>
       <div class="empty" data-project-empty hidden>
         <h3>No projects in this area yet</h3>
         <p>Choose another filter to see the rest.</p>
@@ -63,27 +68,28 @@
 </main>
 
 <footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
+  <div class="wrap">
+    <div class="footer-top">
       <div>
-        <p class="addr"><strong>Ved Patel</strong><br>
-        B.E. Mechanical Engineering, BITS Pilani<br>
-        Pilani, Rajasthan, India</p>
+        <h2>Let's talk.</h2>
+        <p>Open to internships, research assistantships and projects in aerodynamics, CFD and mechanical design.</p>
+        <a class="footer-email" data-site-email href="mailto:f20240433@pilani.bits-pilani.ac.in">f20240433@pilani.bits-pilani.ac.in</a>
       </div>
       <div>
-        <h4>Pages</h4>
+        <h4>Index</h4>
         <a href="index.html">Home</a>
         <a href="projects.html">Projects</a>
         <a href="certificates.html">Certificates</a>
         <a href="letters.html">Letters</a>
       </div>
       <div>
-        <h4>Contact</h4>
-        <a href="mailto:f20240433@pilani.bits-pilani.ac.in">f20240433@pilani.bits-pilani.ac.in</a>
-        <a href="assets/docs/Ved_Patel_CV.pdf" target="_blank" rel="noopener">Curriculum Vitae (PDF)</a>
+        <h4>Elsewhere</h4>
+        <a href="mailto:f20240433@pilani.bits-pilani.ac.in">Email</a>
+        <a data-cv href="assets/docs/Ved_Patel_CV.pdf" target="_blank" rel="noopener">Curriculum vitae</a>
+        <span class="footer-static" data-site-location>Pilani, Rajasthan, India</span>
       </div>
     </div>
-    <div class="copy">
+    <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Ved Patel</span>
       <span>Last updated November 2026</span>
     </div>

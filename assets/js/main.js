@@ -31,20 +31,24 @@
   function $(sel, root) { return (root || document).querySelector(sel); }
   function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
 
-  function chips(items) {
+  function tags(items) {
     return (items || []).map(function (t) {
-      return '<span class="chip">' + esc(t) + "</span>";
+      return '<span class="tag">' + esc(t) + "</span>";
     }).join("");
   }
 
   function statusBadge(status) {
-    var map = { Ongoing: "acc", Completed: "pub", Sample: "sample" };
+    var map = { Ongoing: "acc", Completed: "pub" };
     if (!status) return "";
     return '<span class="badge ' + (map[status] || "muted-badge") + '">' + esc(status) + "</span>";
   }
 
   function sampleBadge(item) {
     return item && item.sample ? '<span class="badge sample">Sample</span>' : "";
+  }
+
+  function pad(n) {
+    return (n < 10 ? "0" : "") + n;
   }
 
   var ICONS = {
@@ -136,13 +140,25 @@
   }
 
   function renderRoles() {
-    var host = $("[data-roles]");
+    var host = $("[data-hero-roles]");
     if (!host) return;
     host.innerHTML = (site.roleLines || []).map(function (r) {
       var tail = [r.org, r.meta].filter(Boolean).join(" · ");
-      return '<p class="role"><strong>' + esc(r.role) + "</strong>" +
-        (tail ? ", " + esc(tail) : "") + "</p>";
+      return '<p class="hero-role"><strong>' + esc(r.role) + "</strong>" +
+        (tail ? "<span>" + esc(tail) + "</span>" : "") + "</p>";
     }).join("");
+  }
+
+  function renderStatic() {
+    $$("[data-site-name]").forEach(function (el) { el.textContent = site.name || ""; });
+    $$("[data-site-tagline]").forEach(function (el) { el.textContent = site.tagline || ""; });
+    $$("[data-site-email]").forEach(function (el) {
+      el.textContent = site.email || "";
+      if (el.tagName === "A") el.setAttribute("href", "mailto:" + (site.email || ""));
+    });
+    $$("[data-site-location]").forEach(function (el) { el.textContent = site.location || ""; });
+    $$("[data-site-caption]").forEach(function (el) { el.textContent = site.heroCaption || ""; });
+    $$("[data-cv]").forEach(function (el) { el.setAttribute("href", site.cv || "#"); });
   }
 
   function renderBio() {
@@ -153,7 +169,7 @@
       }).join("");
     }
     var interests = $("[data-interests]");
-    if (interests) interests.innerHTML = chips(site.interests);
+    if (interests) interests.innerHTML = tags(site.interests);
   }
 
   function renderStats() {
@@ -166,35 +182,42 @@
     }).join("");
   }
 
-  function projectItem(p) {
-    return '<div class="ritem" data-project-item data-categories="' + esc((p.categories || []).join("|")) + '">' +
-      '<a class="rthumb" href="project.html?id=' + encodeURIComponent(p.id) + '" tabindex="-1" aria-hidden="true">' +
-        '<img src="' + esc(p.cover) + '" alt="" loading="lazy">' +
+  /* ---------- project list ---------- */
+
+  function workRow(p, i) {
+    var href = "project.html?id=" + encodeURIComponent(p.id);
+    return '<li class="work-row" data-project-item data-categories="' + esc((p.categories || []).join("|")) + '">' +
+      '<a class="work-link" href="' + href + '">' +
+        '<span class="work-num">' + pad(i + 1) + "</span>" +
+        '<span class="work-copy">' +
+          '<span class="work-meta">' +
+            esc((p.categories || [])[0] || "Project") +
+            '<span class="sep">/</span>' + esc(p.year) +
+            '<span class="sep">/</span>' + esc(p.org) +
+            " " + statusBadge(p.status) +
+          "</span>" +
+          '<span class="work-title">' + esc(p.title) + "</span>" +
+          '<span class="work-summary">' + esc(p.summary) + "</span>" +
+          '<span class="work-tags">' + tags(p.tech) + "</span>" +
+        "</span>" +
+        '<span class="work-thumb"><img src="' + esc(p.cover) + '" alt="" loading="lazy"></span>' +
+        '<span class="work-arrow" aria-hidden="true">&rarr;</span>' +
       "</a>" +
-      "<div>" +
-        "<h3><a href=\"project.html?id=" + encodeURIComponent(p.id) + "\">" + esc(p.title) + "</a></h3>" +
-        '<div class="venue">' + esc(p.org) + " · " + esc(p.year) + " " + statusBadge(p.status) + "</div>" +
-        "<p>" + esc(p.summary) + "</p>" +
-        '<div class="meta-row">' + chips(p.tech) + "</div>" +
-      "</div>" +
-    "</div>";
+    "</li>";
   }
 
   function renderFeaturedProjects() {
     var host = $("[data-featured-projects]");
     if (!host) return;
     var featured = projects.filter(function (p) { return p.featured !== false; }).slice(0, 3);
-    host.innerHTML = featured.map(projectItem).join("");
+    host.innerHTML = featured.map(workRow).join("");
   }
 
   function renderProjects() {
     var host = $("[data-projects]");
     if (!host) return;
 
-    host.innerHTML = projects.map(function (p) {
-      var item = projectItem(p);
-      return item;
-    }).join("");
+    host.innerHTML = projects.map(workRow).join("");
 
     var filterHost = $("[data-filters]");
     if (filterHost) {
@@ -235,34 +258,32 @@
     }
   }
 
+  /* ---------- experience ---------- */
+
   function renderExperience() {
     var host = $("[data-experience]");
     if (host) {
       host.innerHTML = experience.map(function (job) {
-        return "<li>" +
-          '<span class="d">' + esc(job.period) + "</span>" +
-          "<div>" +
-            '<span class="r">' + esc(job.role) + "</span><br>" +
-            '<span class="o">' + esc(job.org) + "</span>" +
-            (job.points && job.points.length
-              ? '<div class="x"><ul>' + job.points.map(function (pt) { return "<li>" + esc(pt) + "</li>"; }).join("") + "</ul></div>"
-              : "") +
-          "</div>" +
-        "</li>";
+        return '<div class="timeline-item">' +
+          '<p class="timeline-date">' + esc(job.period) + "</p>" +
+          "<h3>" + esc(job.role) + "</h3>" +
+          '<p class="timeline-org">' + esc(job.org) + "</p>" +
+          (job.points && job.points.length
+            ? "<ul>" + job.points.map(function (pt) { return "<li>" + esc(pt) + "</li>"; }).join("") + "</ul>"
+            : "") +
+        "</div>";
       }).join("");
     }
 
     var lead = $("[data-leadership]");
     if (lead) {
       lead.innerHTML = leadership.map(function (item) {
-        return "<li>" +
-          '<span class="d">' + esc(item.period) + "</span>" +
-          "<div>" +
-            '<span class="r">' + esc(item.role) + "</span><br>" +
-            '<span class="o">' + esc(item.org) + "</span>" +
-            (item.note ? '<div class="x">' + esc(item.note) + "</div>" : "") +
-          "</div>" +
-        "</li>";
+        return '<div class="lead">' +
+          '<p class="lead-role">' + esc(item.role) + "</p>" +
+          '<p class="lead-org">' + esc(item.org) + "</p>" +
+          (item.note ? '<p class="lead-note">' + esc(item.note) + "</p>" : "") +
+          '<p class="lead-date">' + esc(item.period) + "</p>" +
+        "</div>";
       }).join("");
     }
   }
@@ -272,47 +293,37 @@
   var certById = {};
   certificates.forEach(function (c) { certById[c.id] = c; });
 
-  function certificateCard(cert) {
-    return '<article class="cert-card">' +
-      '<button class="cert-media" type="button" data-cert="' + esc(cert.id) + '" aria-label="Preview ' + esc(cert.title) + '">' +
-        '<img src="' + esc(cert.thumbnail) + '" alt="' + esc(cert.title) + '" loading="lazy">' +
-      "</button>" +
-      '<div class="cert-body">' +
-        '<div class="cert-top"><span>' + esc(cert.issuer) + '</span><span class="when">' + esc(cert.date) + "</span></div>" +
-        "<h3>" + esc(cert.title) + " " + sampleBadge(cert) + "</h3>" +
-        '<div class="meta-row">' + chips(cert.skills) + "</div>" +
-        '<div class="cert-links">' +
-          '<button class="linkish" type="button" data-cert="' + esc(cert.id) + '">Preview</button>' +
-          (cert.credentialUrl
-            ? '<a href="' + esc(cert.credentialUrl) + '" target="_blank" rel="noopener">Verify credential</a>'
-            : '<span class="muted small">Copy available on request</span>') +
-        "</div>" +
-      "</div>" +
-    "</article>";
+  function ledgerRow(cert) {
+    return '<button class="ledger-row" type="button" data-cert="' + esc(cert.id) + '">' +
+      '<span class="ledger-year">' + esc(cert.date) + "</span>" +
+      '<span class="ledger-title">' + esc(cert.title) + " " + sampleBadge(cert) + "</span>" +
+      '<span class="ledger-issuer">' + esc(cert.issuer) + "</span>" +
+      '<span class="ledger-action">' + (cert.file ? "Open PDF \u2192" : "View \u2192") + "</span>" +
+    "</button>";
   }
 
   function renderCertificates() {
     var host = $("[data-certificates]");
-    if (host) host.innerHTML = certificates.map(certificateCard).join("");
+    if (host) host.innerHTML = certificates.map(ledgerRow).join("");
   }
 
   function renderCertificatePreview() {
     var host = $("[data-cert-preview]");
     if (!host) return;
-    host.innerHTML = certificates.slice(0, 3).map(certificateCard).join("");
+    host.innerHTML = certificates.slice(0, 4).map(ledgerRow).join("");
   }
 
   function openCertificate(cert) {
     var hasFile = !!cert.file;
     openModal(
-      '<p class="kicker">Certificate</p>' +
+      '<p class="mini-label">Certificate</p>' +
       '<h2 id="modal-title">' + esc(cert.title) + "</h2>" +
       '<p class="modal-sub">' + esc(cert.issuer) + " · " + esc(cert.date) + " " + sampleBadge(cert) + "</p>" +
       '<div class="modal-figure"><img src="' + esc(cert.thumbnail) + '" alt="' + esc(cert.title) + '"></div>' +
-      (cert.skills && cert.skills.length ? '<div class="meta-row">' + chips(cert.skills) + "</div>" : "") +
+      (cert.skills && cert.skills.length ? '<div class="work-tags">' + tags(cert.skills) + "</div>" : "") +
       '<div class="modal-actions">' +
         (hasFile
-          ? '<a class="btn btn-primary" href="' + esc(cert.file) + '" target="_blank" rel="noopener">Open PDF</a>' +
+          ? '<a class="btn btn-accent" href="' + esc(cert.file) + '" target="_blank" rel="noopener">Open PDF</a>' +
             '<a class="btn" href="' + esc(cert.file) + '" download>Download</a>'
           : '<span class="muted small">A digital copy of this certificate is available on request.</span>') +
         (cert.credentialUrl
@@ -334,46 +345,44 @@
   var letterById = {};
   letters.forEach(function (l) { letterById[l.id] = l; });
 
-  function letterItem(letter) {
+  function letterCard(letter) {
     var isPublic = letter.visibility === "public" && !!letter.file;
+    var pending = letter.visibility === "public" && !letter.file;
     var onRequest = letter.visibility === "on-request";
-    return '<article class="letter-item">' +
-      '<div class="letter-preview">' +
-        '<img src="' + esc(letter.thumbnail) + '" alt="" loading="lazy">' +
-        (isPublic ? '<span class="badge acc">PDF</span>' : '<span class="badge muted-badge">On request</span>') +
-      "</div>" +
-      "<div>" +
-        '<p class="kicker">Letter of recommendation</p>' +
-        "<h3>" + esc(letter.recommender) + " " + sampleBadge(letter) + "</h3>" +
-        '<p class="letter-role">' + esc(letter.title) + ", " + esc(letter.affiliation) + "</p>" +
-        '<p class="letter-rel">' + esc(letter.relationship) + " · " + esc(letter.date) + "</p>" +
-        '<div class="letter-actions">' +
-          (isPublic
-            ? '<button class="linkish" type="button" data-letter="' + esc(letter.id) + '">Preview</button>' +
-              '<a href="' + esc(letter.file) + '" target="_blank" rel="noopener">Open PDF</a>' +
-              '<a href="' + esc(letter.file) + '" download>Download</a>'
-            : '<span class="muted small">' +
-              (onRequest ? "Available on request — please get in touch by email." : "A digital copy is available on request.") +
-              "</span>") +
-        "</div>" +
+    var state = isPublic ? "Published PDF" : (pending ? "Public \u00b7 pending upload" : "On request");
+    return '<article class="letter-card">' +
+      '<div class="quote-mark" aria-hidden="true">&ldquo;</div>' +
+      '<p class="letter-from">' + esc(letter.relationship) + "</p>" +
+      "<h2>" + esc(letter.recommender) + " " + sampleBadge(letter) + "</h2>" +
+      '<p class="letter-role">' + esc(letter.title) + ", " + esc(letter.affiliation) + "</p>" +
+      '<p class="letter-meta">' + esc(letter.date) + " · " + state + "</p>" +
+      '<div class="letter-actions">' +
+        (isPublic
+          ? '<button class="btn" type="button" data-letter="' + esc(letter.id) + '">Preview</button>' +
+            '<a class="btn btn-accent" href="' + esc(letter.file) + '" target="_blank" rel="noopener">Open PDF</a>'
+          : '<span class="letter-note">' +
+            (pending
+              ? "Document not uploaded yet."
+              : (onRequest ? "Available on request — please get in touch by email." : "A digital copy is available on request.")) +
+            "</span>") +
       "</div>" +
     "</article>";
   }
 
   function renderLetters() {
     var host = $("[data-letters]");
-    if (host) host.innerHTML = letters.map(letterItem).join("");
+    if (host) host.innerHTML = letters.map(letterCard).join("");
   }
 
   function openLetter(letter) {
     if (!letter || !letter.file) return;
     openModal(
-      '<p class="kicker">Letter of recommendation</p>' +
+      '<p class="mini-label">Letter of recommendation</p>' +
       '<h2 id="modal-title">' + esc(letter.recommender) + "</h2>" +
       '<p class="modal-sub">' + esc(letter.title) + ", " + esc(letter.affiliation) + " · " + esc(letter.date) + "</p>" +
       '<iframe class="pdf-frame" src="' + esc(letter.file) + '#view=FitH" title="Letter of recommendation from ' + esc(letter.recommender) + '"></iframe>' +
       '<div class="modal-actions">' +
-        '<a class="btn btn-primary" href="' + esc(letter.file) + '" target="_blank" rel="noopener">Open in new tab</a>' +
+        '<a class="btn btn-accent" href="' + esc(letter.file) + '" target="_blank" rel="noopener">Open in new tab</a>' +
         '<a class="btn" href="' + esc(letter.file) + '" download>Download</a>' +
       "</div>" +
       '<span class="note">Shared with the permission of the author.</span>'
@@ -425,59 +434,68 @@
     var next = projects[index + 1];
 
     host.innerHTML =
-      '<a class="back-link" href="projects.html">&larr; All projects</a>' +
-      '<header class="detail-head">' +
-        '<p class="kicker">' + esc((project.categories || [])[0] || "Project") + "</p>" +
-        "<h1>" + esc(project.title) + "</h1>" +
-        '<p class="detail-meta">' + esc(project.org) + " · " + esc(project.year) + " " + statusBadge(project.status) + "</p>" +
-      "</header>" +
-      '<dl class="facts">' +
-        '<div class="fact"><div class="k">Role</div><div class="v">' + esc(project.role) + "</div></div>" +
-        '<div class="fact"><div class="k">Organisation</div><div class="v">' + esc(project.org) + "</div></div>" +
-        '<div class="fact"><div class="k">Timeline</div><div class="v">' + esc(project.year) + "</div></div>" +
-        '<div class="fact"><div class="k">Status</div><div class="v">' + esc(project.status) + "</div></div>" +
-      "</dl>" +
-      '<div class="detail-grid">' +
-        '<div class="prose">' +
-          (project.description || []).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") +
-          projectFigure(project) +
-          ((project.gallery && project.gallery.length)
-            ? '<div class="gallery">' + project.gallery.map(function (g) {
-                return '<figure class="figure">' +
-                  '<div class="frame"><img src="' + esc(g.src) + '" alt="' + esc(g.caption || project.title) + '" loading="lazy" data-lightbox data-caption="' + esc(g.caption || project.title) + '"></div>' +
-                  (g.caption ? "<figcaption>" + esc(g.caption) + "</figcaption>" : "") +
-                "</figure>";
-              }).join("") + "</div>"
-            : "") +
+      '<header class="detail-hero">' +
+        '<div class="wrap">' +
+          '<a class="back-link" href="projects.html">&larr; All projects</a>' +
+          '<p class="mini-label">' + esc((project.categories || [])[0] || "Project") + "</p>" +
+          "<h1>" + esc(project.title) + "</h1>" +
+          '<p class="lede">' + esc(project.summary) + "</p>" +
+          '<p class="masthead-meta">' +
+            "<span>" + esc(project.org) + "</span><span class=\"sep\">/</span>" +
+            "<span>" + esc(project.year) + "</span><span class=\"sep\">/</span>" +
+            "<span>" + esc(project.status) + "</span>" +
+          "</p>" +
         "</div>" +
-        '<aside class="detail-aside">' +
-          ((project.highlights && project.highlights.length)
-            ? '<div class="panel"><h3>Highlights</h3><ul>' +
-              project.highlights.map(function (h) { return "<li>" + esc(h) + "</li>"; }).join("") +
-              "</ul></div>"
-            : "") +
-          ((project.tech && project.tech.length)
-            ? '<div class="panel"><h3>Tools &amp; methods</h3><div class="chips">' + chips(project.tech) + "</div></div>"
-            : "") +
-          ((project.links && project.links.length)
-            ? '<div class="panel"><h3>Links</h3><div class="links">' +
-              project.links.map(function (l) {
-                return '<a href="' + esc(l.href) + '"' + externalAttrs(l) + ">" + esc(l.label) + " &rarr;</a>";
-              }).join("") +
-              "</div></div>"
-            : "") +
-        "</aside>" +
-      "</div>" +
-      ((previous || next)
-        ? '<nav class="prevnext" aria-label="Project navigation">' +
-            (previous
-              ? '<a href="project.html?id=' + encodeURIComponent(previous.id) + '"><span class="lbl">&larr; Previous</span><span class="t">' + esc(previous.title) + "</span></a>"
-              : "<span></span>") +
-            (next
-              ? '<a class="next" href="project.html?id=' + encodeURIComponent(next.id) + '"><span class="lbl">Next &rarr;</span><span class="t">' + esc(next.title) + "</span></a>"
-              : "<span></span>") +
-          "</nav>"
-        : "");
+      "</header>" +
+      '<div class="wrap" style="padding-top:0">' +
+        '<dl class="facts">' +
+          '<div class="fact"><div class="k">Role</div><div class="v">' + esc(project.role) + "</div></div>" +
+          '<div class="fact"><div class="k">Organisation</div><div class="v">' + esc(project.org) + "</div></div>" +
+          '<div class="fact"><div class="k">Timeline</div><div class="v">' + esc(project.year) + "</div></div>" +
+          '<div class="fact"><div class="k">Status</div><div class="v">' + esc(project.status) + "</div></div>" +
+        "</dl>" +
+        '<div class="detail-grid">' +
+          '<div class="prose">' +
+            (project.description || []).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") +
+            projectFigure(project) +
+            ((project.gallery && project.gallery.length)
+              ? '<div class="gallery">' + project.gallery.map(function (g) {
+                  return '<figure class="figure">' +
+                    '<div class="frame"><img src="' + esc(g.src) + '" alt="' + esc(g.caption || project.title) + '" loading="lazy" data-lightbox data-caption="' + esc(g.caption || project.title) + '"></div>' +
+                    (g.caption ? "<figcaption>" + esc(g.caption) + "</figcaption>" : "") +
+                  "</figure>";
+                }).join("") + "</div>"
+              : "") +
+          "</div>" +
+          '<aside class="detail-aside">' +
+            ((project.highlights && project.highlights.length)
+              ? '<div class="panel"><h3>Highlights</h3><ul>' +
+                project.highlights.map(function (h) { return "<li>" + esc(h) + "</li>"; }).join("") +
+                "</ul></div>"
+              : "") +
+            ((project.tech && project.tech.length)
+              ? '<div class="panel"><h3>Tools &amp; methods</h3><div class="chips">' + tags(project.tech) + "</div></div>"
+              : "") +
+            ((project.links && project.links.length)
+              ? '<div class="panel"><h3>Links</h3><div class="links">' +
+                project.links.map(function (l) {
+                  return '<a href="' + esc(l.href) + '"' + externalAttrs(l) + ">" + esc(l.label) + " &rarr;</a>";
+                }).join("") +
+                "</div></div>"
+              : "") +
+          "</aside>" +
+        "</div>" +
+        ((previous || next)
+          ? '<nav class="prevnext" aria-label="Project navigation">' +
+              (previous
+                ? '<a href="project.html?id=' + encodeURIComponent(previous.id) + '"><span class="lbl">&larr; Previous</span><span class="t">' + esc(previous.title) + "</span></a>"
+                : "<span></span>") +
+              (next
+                ? '<a class="next" href="project.html?id=' + encodeURIComponent(next.id) + '"><span class="lbl">Next &rarr;</span><span class="t">' + esc(next.title) + "</span></a>"
+                : "<span></span>") +
+            "</nav>"
+          : "") +
+      "</div>";
   }
 
   /* ---------- image lightbox ---------- */
@@ -518,6 +536,7 @@
   /* ---------- boot ---------- */
 
   initChrome();
+  renderStatic();
   renderRoles();
   renderContacts();
   renderBio();

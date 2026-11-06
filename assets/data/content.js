@@ -13,6 +13,8 @@
 window.CONTENT = {
   site: {
     name: "Ved Patel",
+    tagline: "Mechanical engineering undergraduate working where simulation meets hardware — aerodynamic modelling, structural validation and machines that actually get built.",
+    heroCaption: "Pilani, Rajasthan · 2026",
     roleLines: [
       {
         role: "B.E. Mechanical Engineering",
@@ -270,7 +272,7 @@ window.CONTENT = {
       relationship: "Summer internship supervisor",
       date: "2026",
       visibility: "public",
-      file: null,
+      file: "assets/docs/lors/sample-lor-drdo.pdf",
       thumbnail: "assets/img/letter-placeholder.svg",
       sample: true
     },
@@ -282,7 +284,7 @@ window.CONTENT = {
       relationship: "Course instructor and project guide",
       date: "2026",
       visibility: "public",
-      file: null,
+      file: "assets/docs/lors/sample-lor-bits.pdf",
       thumbnail: "assets/img/letter-placeholder.svg",
       sample: true
     },
