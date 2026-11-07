@@ -314,8 +314,8 @@ window.CONTENT = {
       summary: "Summer internship at DRDO CEMILAC, Bengaluru, working on an in-house 2D incompressible flow solver and transient aerodynamic analysis.",
       skills: ["Aerodynamics", "CFD", "MATLAB"],
       credentialUrl: null,
-      file: "assets/docs/certs/drdo-cemilac.pdf",
-      thumbnail: "assets/img/certs/drdo-cemilac-thumb.webp"
+      file: "assets/img/certs/drdo-cemilac.jpeg",
+      thumbnail: "assets/img/certs/drdo-cemilac.jpeg"
     },
     {
       id: "matlab-onramp",

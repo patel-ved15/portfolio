@@ -301,8 +301,9 @@
 
   function ledgerRow(item) {
     var isLetter = item.type === "Letter";
+    var isImage = item.file && /\.(jpe?g|png|webp|gif|avif)($|\?)/i.test(item.file);
     var action = item.file
-      ? (isLetter ? "Read letter \u2192" : "Open PDF \u2192")
+      ? (isLetter ? "Read letter \u2192" : (isImage ? "View \u2192" : "Open PDF \u2192"))
       : "View \u2192";
     return '<button class="ledger-row" type="button" data-credential="' + esc(item.id) + '">' +
       '<span class="ledger-year">' + esc(item.date) + "</span>" +
@@ -327,6 +328,7 @@
     var isLetter = item.type === "Letter";
     var hasFile = !!item.file;
     var isPdf = hasFile && /\.pdf($|\?)/i.test(item.file);
+    var isImage = hasFile && /\.(jpe?g|png|webp|gif|avif)($|\?)/i.test(item.file);
     var kind = isLetter ? "Letter of recommendation" : "Certificate";
 
     var html =
@@ -346,6 +348,8 @@
 
     if (hasFile && isPdf) {
       html += '<iframe class="pdf-frame" src="' + esc(item.file) + '#view=FitH" title="' + esc(item.title) + '"></iframe>';
+    } else if (isImage) {
+      html += '<div class="modal-figure"><img src="' + esc(item.file) + '" alt="' + esc(item.title) + '"></div>';
     } else {
       html += '<div class="modal-figure"><img src="' + esc(item.thumbnail) + '" alt="' + esc(item.title) + '"></div>';
     }
@@ -356,7 +360,8 @@
 
     html += '<div class="modal-actions">';
     if (hasFile) {
-      html += '<a class="btn btn-accent" href="' + esc(item.file) + '" target="_blank" rel="noopener">Open PDF</a>' +
+      html += '<a class="btn btn-accent" href="' + esc(item.file) + '" target="_blank" rel="noopener">' +
+        (isImage ? "Open image" : "Open PDF") + '</a>' +
         '<a class="btn" href="' + esc(item.file) + '" download>Download</a>';
     } else {
       html += '<span class="muted small">A digital copy of this credential is available on request.</span>';
