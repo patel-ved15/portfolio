@@ -61,7 +61,7 @@ window.CONTENT = {
     stats: [
       { num: "8.49", label: "CGPA", sub: "B.E. Mechanical, BITS Pilani" },
       { num: "8", label: "Engineering projects", sub: "CFD · UAV · rover systems" },
-      { num: "2nd", label: "in Asia, ERC 2025", sub: "CRISS Robotics" }
+      { num: "3", label: "Certificates", sub: "DRDO · MathWorks · CFD++" }
     ],
     coursework: [
       {
@@ -118,8 +118,8 @@ window.CONTENT = {
         "The project emphasised modular mechanical design, lightweight structural construction, CAD-based assembly validation and finite element analysis for evaluating the suitability of an adaptable rover chassis."
       ],
       tech: ["Fusion 360", "T20 aluminium", "ANSYS", "Structural analysis"],
-      cover: "assets/img/projects/chassis.svg",
-      coverCaption: "Placeholder artwork for the modular rover chassis. Replace with a project photo."
+      cover: "assets/img/projects/chassis.webp",
+      coverCaption: "Rover chassis CAD assembly, sized around the rocker-bogie suspension and payload bay."
     },
     {
       id: "cfd-solver",
@@ -135,8 +135,8 @@ window.CONTENT = {
         "The project provided practical experience in numerical discretisation, computational fluid dynamics, iterative solution methods and the development of CFD algorithms."
       ],
       tech: ["MATLAB", "Finite difference method", "SIMPLE", "QUICK"],
-      cover: "assets/img/projects/cfd-solver.svg",
-      coverCaption: "Placeholder artwork for the 2D flow solver. Replace with a project photo."
+      cover: "assets/img/projects/cfd-solver.webp",
+      coverCaption: "Solver output for a two-dimensional incompressible flow benchmark case."
     },
     {
       id: "rc-f22",
@@ -169,8 +169,8 @@ window.CONTENT = {
         "A physical prototype was successfully 3D-printed and tested on terrain. Although full integration with the rover has not yet taken place, the single-wheel prototype demonstrated the intended performance during terrain testing. The project combined topology optimisation, multi-material additive manufacturing, mechanical integration and application-specific tread design."
       ],
       tech: ["Fusion 360", "PETG", "TPU", "Topology optimisation"],
-      cover: "assets/img/projects/rover-wheel.svg",
-      coverCaption: "Placeholder artwork for the 3D-printed rover wheel. Replace with a project photo."
+      cover: "assets/img/projects/rover-wheel.webp",
+      coverCaption: "Topology-optimised rover wheel, prepared for multi-material additive manufacturing."
     },
     {
       id: "hopf-oscillator",
@@ -186,8 +186,8 @@ window.CONTENT = {
         "The project explored the application of nonlinear dynamical systems to robotic motion generation, particularly the use of adaptive oscillators to produce rhythmic motor-control signals. It provided experience in mathematical modelling, differential-equation-based control implementation, feedback integration and the development of adaptive motion-generation algorithms."
       ],
       tech: ["MATLAB", "Nonlinear dynamics", "Adaptive control"],
-      cover: "assets/img/projects/hopf.svg",
-      coverCaption: "Placeholder artwork for the adaptive Hopf oscillator. Replace with a project photo."
+      cover: "assets/img/projects/hopf-oscillator.webp",
+      coverCaption: "Adaptive Hopf oscillator response used for rhythmic gait generation."
     },
     {
       id: "rc-b2",
@@ -323,29 +323,27 @@ window.CONTENT = {
       type: "Certificate",
       title: "MATLAB Onramp",
       issuer: "MathWorks",
-      date: "2026",
+      date: "3 Aug 2026",
       summary: "MathWorks' introductory MATLAB course covering arrays, plotting, control flow, functions and basic data analysis.",
       skills: ["MATLAB"],
       credentialUrl: null,
-      file: null,
-      thumbnail: "assets/img/certificate-placeholder.svg",
-      sample: true
+      file: "assets/docs/certs/matlab-onramp.pdf",
+      thumbnail: "assets/img/certs/matlab-onramp-thumb.webp"
     },
     {
       id: "lor-drdo",
       type: "Letter",
       title: "Letter of Recommendation — DRDO Scientist",
       issuer: "DRDO CEMILAC, Bengaluru",
-      date: "2026",
+      date: "31 Oct 2026",
       summary: "Recommendation from the DRDO CEMILAC scientist who supervised the summer internship on the 2D incompressible flow solver.",
-      recommender: "[Supervisor name]",
-      recommenderTitle: "Scientist / Engineer",
+      recommender: "G Senthilkumar",
+      recommenderTitle: "Scientist",
       affiliation: "DRDO CEMILAC, Bengaluru",
       relationship: "Summer internship supervisor",
       visibility: "public",
-      file: "assets/docs/lors/sample-lor-drdo.pdf",
-      thumbnail: "assets/img/letter-placeholder.svg",
-      sample: true
+      file: "assets/docs/lors/lor-drdo.pdf",
+      thumbnail: "assets/img/lors/lor-drdo-thumb.webp"
     },
     {
       id: "cfdpp-training",

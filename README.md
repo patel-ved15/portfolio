@@ -38,8 +38,8 @@ assets/
   css/style.css       All styling (palette lives in :root)
   js/main.js          Rendering, filters, modals, mobile nav
   data/content.js     ← edit this for almost everything
-  img/                Portrait, project placeholders, credential placeholders
-  docs/               CV and the sample letter PDF
+  img/                Portrait, project photos, credential thumbnails
+  docs/               CV, certificates and letters (PDF)
 .nojekyll             Tells GitHub Pages not to run Jekyll
 ```
 
@@ -102,9 +102,11 @@ appear under more than one group by listing multiple categories.
 ### Add a project photo
 
 Drop the image into `assets/img/projects/` and point `cover` at it. Each detail
-page is designed for one photograph. The current SVG files are themed
-placeholders — replace them with JPEG/PNG/WebP images and update the paths in
-`content.js` when the real photos are available. A 4:3 or 3:2 crop works best.
+page is designed for one photograph. WebP at 1600×1200 (4:3) is preferred,
+roughly 150–300 KB. Four projects currently use real photos (`chassis`,
+`cfd-solver`, `rover-wheel`, `hopf-oscillator`); the other four still use themed
+SVG placeholders — replace them and update the paths in `content.js` when the
+photos are available.
 
 ### Add or edit a credential
 
@@ -143,7 +145,7 @@ For a letter, use the letter-specific fields instead of `skills`:
   relationship: "Project supervisor",
   visibility: "public",
   file: "assets/docs/lors/lor-name.pdf",
-  thumbnail: "assets/img/letter-placeholder.svg",
+  thumbnail: "assets/img/lors/lor-name-thumb.webp",
   sample: false
 }
 ```
@@ -153,9 +155,9 @@ viewer. With `file: null`, the row still appears and the modal says a copy is
 available on request.
 
 > **Privacy:** anything with a public `file` is published and can be indexed.
-> Only publish a letter with its author's permission. The DRDO letter currently
-> points at `assets/docs/lors/sample-lor-drdo.pdf`, which is a clearly marked
-> placeholder. Replace it with the signed original and update `recommender`.
+> Only publish a letter with its author's permission. The DRDO letter
+> (`assets/docs/lors/lor-drdo.pdf`) is the signed original and is published
+> with the recommender's name on the page.
 
 ### Add coursework
 
