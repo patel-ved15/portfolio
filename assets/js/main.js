@@ -114,6 +114,7 @@
       var toggle = $(".nav-toggle");
       if (links && links.classList.contains("open")) {
         links.classList.remove("open");
+        document.body.classList.remove("menu-open");
         if (toggle) toggle.setAttribute("aria-expanded", "false");
       }
     }
@@ -203,7 +204,7 @@
           '<span class="work-meta">' + esc(domain) + "</span>" +
           '<span class="work-title">' + esc(p.title) + "</span>" +
         "</span>" +
-        '<span class="work-thumb"><img src="' + esc(p.cover) + '" alt="" loading="lazy"></span>' +
+        '<span class="work-thumb"><img src="' + esc(p.cover) + '" alt="" loading="lazy" decoding="async"></span>' +
         '<span class="work-arrow" aria-hidden="true">&rarr;</span>' +
       "</a>" +
     "</li>";
@@ -390,7 +391,7 @@
   function projectFigure(project) {
     if (!project.cover) return "";
     return '<figure class="figure">' +
-      '<div class="frame"><img src="' + esc(project.cover) + '" alt="' + esc(project.title) + '" data-lightbox data-caption="' + esc(project.coverCaption || project.title) + '"></div>' +
+      '<div class="frame"><img src="' + esc(project.cover) + '" alt="' + esc(project.title) + '" decoding="async" data-lightbox data-caption="' + esc(project.coverCaption || project.title) + '"></div>' +
       (project.coverCaption ? "<figcaption>" + esc(project.coverCaption) + "</figcaption>" : "") +
     "</figure>";
   }
@@ -501,15 +502,19 @@
     var toggle = $(".nav-toggle");
     var links = $(".nav-links");
     if (toggle && links) {
-      toggle.addEventListener("click", function () {
-        var open = links.classList.toggle("open");
+      var setMenu = function (open) {
+        links.classList.toggle("open", open);
+        document.body.classList.toggle("menu-open", open);
         toggle.setAttribute("aria-expanded", String(open));
+      };
+      toggle.addEventListener("click", function () {
+        setMenu(!links.classList.contains("open"));
       });
       links.addEventListener("click", function (event) {
-        if (event.target.closest("a")) {
-          links.classList.remove("open");
-          toggle.setAttribute("aria-expanded", "false");
-        }
+        if (event.target.closest("a")) setMenu(false);
+      });
+      window.addEventListener("resize", function () {
+        if (window.innerWidth > 760) setMenu(false);
       });
     }
   }
