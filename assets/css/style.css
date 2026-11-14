@@ -164,7 +164,7 @@ p:last-child{ margin-bottom:0; }
   grid-template-columns:minmax(0,1fr) 320px;
   gap:72px;
   align-items:end;
-  padding:78px 0 88px;
+  padding:78px 32px 88px;
 }
 .eyebrow{
   font-family:var(--mono);
@@ -1123,7 +1123,7 @@ body.modal-open{ overflow:hidden; }
   .nav-links a.nav-cta{ min-height:50px; padding:15px 16px !important; }
 
   /* hero */
-  .hero-grid{ padding:44px 0 52px; }
+  .hero-grid{ padding:44px 22px 52px; }
   .hero h1{ font-size:clamp(2.6rem, 12.5vw, 3.6rem); }
   .hero-lead{ font-size:1.04rem; }
   .hero-portrait{ max-width:200px; }
@@ -1185,6 +1185,7 @@ body.modal-open{ overflow:hidden; }
     padding-right:max(16px, env(safe-area-inset-right));
   }
   .hero h1{ font-size:clamp(2.35rem, 12vw, 2.9rem); }
+  .hero-grid{ padding:44px 16px 52px; }
   .hero-contacts a,
   .hero-contacts > span{ font-size:.66rem; }
   .modal-body{
